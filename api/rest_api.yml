@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: VKontakte Social Network API
+  version: 1.0.0
+  description: API для социальной сети ВКонтакте
+
+paths:
+  /friends:
+    post:
+      summary: Добавление друга
+      tags:
+        - Друзья
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  description: ID пользователя, которого нужно добавить в друзья
+    delete:
+      summary: Удаление друга
+      tags:
+        - Друзья
+
+  /friends/{userId}:
+    get:
+      summary: Просмотр друзей пользователя
+      tags:
+        - Друзья
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+
+  /users/{userId}:
+    get:
+      summary: Просмотр анкеты пользователя
+      tags:
+        - Пользователи
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+
+  /posts:
+    post:
+      summary: Публикация поста в ленту
+      tags:
+        - Посты
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: Текст поста
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                  description: Массив идентификаторов прикрепленных медиафайлов
+
+  /media:
+    post:
+      summary: Загрузка медиа файлов для постов
+      tags:
+        - Медиа
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Медиафайл для загрузки
+
+  /feed:
+    get:
+      summary: Просмотр ленты постов (домашней и пользователей)
+      tags:
+        - Лента
+
+  /dialogs:
+    get:
+      summary: Просмотр диалогов пользователя
+      tags:
+        - Сообщения
+
+  /chats:
+    get:
+      summary: Просмотр чатов пользователя
+      tags:
+        - Сообщения
+
+  /messages:
+    post:
+      summary: Отправка сообщений в диалогах и чатах
+      tags:
+        - Сообщения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipientId:
+                  type: integer
+                  description: ID получателя или чата
+                text:
+                  type: string
+                  description: Текст сообщения
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                  description: Массив идентификаторов прикрепленных файлов
+    get:
+      summary: Чтение сообщений в диалогах и чатах
+      tags:
+        - Сообщения
+
+components:
+  schemas:
+    # Здесь можно добавить определения схем для различных объектов API
+
+security:
+  # Здесь можно определить схемы безопасности, например OAuth2
+
+tags:
+  - name: Друзья
+    description: Операции с друзьями
+  - name: Пользователи
+    description: Операции с пользователями
+  - name: Посты
+    description: Операции с постами
+  - name: Медиа
+    description: Операции с медиа файлами
+  - name: Лента
+    description: Операции с лентой постов
+  - name: Сообщения
+    description: Операции с сообщениями и чатами

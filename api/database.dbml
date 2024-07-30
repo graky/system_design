@@ -1,0 +1,71 @@
+Table Users {
+    id int [pk, increment] // Primary Key
+    name varchar(255)
+    description text
+    photo varchar(255)
+    city varchar(255)
+    interests text
+
+    Note: "Replicated across all shards"
+    // Пользователи могут быть реплицированы на всех шардах для быстрого доступа
+}
+
+Table Posts {
+    id int [pk, increment] // Primary Key
+    user_id int [ref: > Users.id] // Foreign Key
+    description text
+    media varchar(255)
+    hashtags text
+    likes int
+    views int
+    comments text
+    created_at datetime
+
+    Note: "Sharded by user_id"
+    // Посты распределены по шардам на основе user_id для балансировки нагрузки
+}
+
+Table Messages {
+    id int [pk, increment] // Primary Key
+    sender_id int [ref: > Users.id] // Foreign Key
+    receiver_id int [ref: > Users.id] // Foreign Key
+    content text
+    is_read boolean
+    created_at datetime
+
+    Note: "Sharded by sender_id and receiver_id"
+    // Сообщения распределены по шардам на основе sender_id и receiver_id для оптимизации запросов
+}
+
+Table Relationships {
+    id int [pk, increment] // Primary Key
+    user1_id int [ref: > Users.id] // Foreign Key
+    user2_id int [ref: > Users.id] // Foreign Key
+    relationship_type varchar(255) // e.g., friend, follower, romantic
+    created_at datetime
+
+    Note: "Sharded by user1_id and user2_id"
+    // Отношения распределены по шардам на основе user1_id и user2_id для равномерного распределения данных
+}
+
+Table Media {
+    id int [pk, increment] // Primary Key
+    user_id int [ref: > Users.id] // Foreign Key
+    type varchar(50) // e.g., photo, audio, video
+    url varchar(255)
+    created_at datetime
+
+    Note: "Sharded by user_id"
+    // Медиа распределены по шардам на основе user_id для улучшения производительности
+}
+
+Table Comments {
+    id int [pk, increment] // Primary Key
+    post_id int [ref: > Posts.id] // Foreign Key
+    user_id int [ref: > Users.id] // Foreign Key
+    content text
+    created_at datetime
+
+    Note: "Sharded by post_id"
+    // Комментарии распределены по шардам на основе post_id для эффективной обработки
+}
